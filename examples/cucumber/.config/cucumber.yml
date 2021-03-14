@@ -1,0 +1,2 @@
+report: --strict --publish-quiet --format CustomFormatter
+default: --publish-quiet --format progress

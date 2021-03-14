@@ -1,0 +1,141 @@
+run:
+  timeout: 5m
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  goimports:
+    local-prefixes: github.com/noodlensk
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 25
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  depguard:
+    list-type: blacklist
+  misspell:
+    locale: US
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+      - diagnostic
+    disabled-checks:
+      - hugeParam
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+      - whyNoLint
+  lll:
+    line-length: 160
+  funlen:
+    lines: 100
+    statements: 50
+linters:
+  enable:
+    - asciicheck
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - exhaustive
+    - exportloopref
+    - forbidigo
+    - funlen
+    - gci
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - gofumpt
+    - goheader
+    - goimports
+    - golint
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - makezero
+    - maligned
+    - misspell
+    - nakedret
+    - nlreturn
+    - noctx
+    - nolintlint
+    - paralleltest
+    - predeclared
+    - rowserrcheck
+    - scopelint
+    - sqlclosecheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - stylecheck
+    - testpackage
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+    - wsl
+  #  - errorlint
+  #  - exhaustivestruct
+  #  - godot
+  #  - goerr113
+  #  - nestif
+  #  - wrapcheck
+  #  - lll
+  #  - prealloc
+  #  - gochecknoglobals
+  #  - gocognit
+  #  - godox
+  #  - gomnd
+  disable-all: true
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    # Almost all programs ignore errors on these functions and in most cases it's ok
+    - text: 'Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked'
+      linters:
+        - errcheck
+    # Error shadowing is a common case
+    - text: 'shadow: declaration of "err" shadows declaration at line (.*)'
+      linters:
+        - govet
+    # Logger
+    - source: '\.Log\((.*)'
+      linters:
+        - errcheck
+    - text: 'G104'
+      linters:
+        - gosec
+  exclude:
+    - Using the variable on range scope `tc` in function literal
+
+# golangci.com configuration
+# https://github.com/golangci/golangci/wiki/Configuration
+service:
+  golangci-lint-version: 1.37.1 # use the fixed version to not introduce new linters unexpectedly

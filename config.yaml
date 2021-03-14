@@ -1,0 +1,34 @@
+name: Health
+env: local
+server:
+  http:
+    address: ":8080"
+reporters:
+  OpsGenie:
+    enabled: false
+    config:
+      OpsGenieAPIURL: "api.eu.opsgenie.com"
+      APIKey: <APIKEY>
+      DefaultAlertProperties:
+        "service": "my-service"
+        "env": "local"
+checks:
+  suites:
+    - name: All
+      execCommand: [ "./examples/bash/healthchecks.sh" ]
+      reportPath: "report.json"
+      runEvery: 10s
+    - name: Cucumber
+      execCommand: [ "bash", "-c", "cd ./examples/cucumber && bundle exec cucumber --profile report features || true" ]
+      reportPath: "./examples/cucumber/report.json"
+      runEvery: 10s
+    - name: Cucumber tags
+      execCommand: [ "bash", "-c", "cd ./examples/cucumber && bundle exec cucumber --tags @only-a --profile report features || true" ]
+      env:
+        REPORT_FILE: "report_only_a.json"
+      reportPath: "./examples/cucumber/report_only_a.json"
+      runEvery: 1s
+    - name: Invalid command
+      execCommand: [ "invalid command" ]
+      reportPath: "report.json"
+      runEvery: 3s
