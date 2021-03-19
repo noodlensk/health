@@ -11,6 +11,14 @@ fmt: ## gofmt and goimports all go files
 
 build-server: ## Build server
 	go build ./cmd/server
+
+release:
+	mkdir -p release && \
+	cd ./cmd/server && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ./../../release/server_linux && \
+	cd ../../ && \
+	zip --junk-paths  health ./release/server_linux &&\
+	rm -rf release
+
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
